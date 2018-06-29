@@ -3,13 +3,11 @@ import csv
 
 #Initializing variables
 electdate=[]
-revenue=0
-max_revenue=0
-min_revenue=0
+max_revenue=-99999
+min_revenue=99999
 accessed=True
 changes=[]
-sum_change=0
-change_accessed=True
+revenue=0
 budgetcsv=os.path.join('.','budget_data.csv')
 with open(budgetcsv, newline="") as budgetdata:
     budgetreader=csv.reader(budgetdata,delimiter=',')
@@ -23,43 +21,37 @@ with open(budgetcsv, newline="") as budgetdata:
         #calculating sum of revenue
         revenue=revenue+int(row[1])
 
-        #assigning max and min values to the first row elements
+     
         if (accessed==True):
-            max_revenue=int(row[1])
-            min_revenue=int(row[1])
-            min_date=row[0]
-            max_date=row[0]
+
+            #calculating revenue changes between months, first month is set to 0 
+            changes.append(0)
+            prev_revenue=row[1]
             accessed=False
 
-        #calculating max and min revenue
+        #calculating max and min revenue and revenue changes
         else:
-            if(int(row[1])>max_revenue):
-                max_revenue=int(row[1])
+            revenue_change=(int(row[1])-int(prev_revenue))
+            changes.append(revenue_change)
+            prev_revenue=row[1]
+            if(revenue_change>max_revenue):
+                max_revenue=revenue_change
                 max_date=row[0]
-            if int(row[1])<min_revenue:
-                min_revenue=int(row[1])
+            if revenue_change<min_revenue:
+                min_revenue=revenue_change
                 min_date=row[0]
+            
 
-        #assigning revenue changes between months to list variable changes, first months change is set to 0
-        if change_accessed==True:
-            changes.append(0)
-            change_accessed=False
-            prev_revenue=row[1]
-        else:
-            changes.append(int(row[1])-int(prev_revenue))
-            prev_revenue=row[1]
 
-    #calculating average of revenue changes between months
-    for change in changes:
-         sum_change=sum_change+int(change)
 
-    avg_change=sum_change/(len(changes)-1)
+    avg_change=sum(changes)/(len(changes)-1)
     max_date2=max_date.replace("-","-20")
     min_date2=min_date.replace("-","-20")
             
         
      #printing all the values   
-        
+    print("Financial Analysis")
+    print("----------------------------")
     print("Total Months: "+str(len(electdate)))
     print("Total net amount over the entire period: $"+str(revenue))
     print("Total average change between months over the entire period: $"+"%.2f" % avg_change)
