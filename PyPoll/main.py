@@ -25,11 +25,9 @@ with open(electionfile, newline="") as electiondata:
     print("-----------------------------------------------")
     print("Total Votes: "+str(total_votes))
     print("--------------------------------------")
-    # Below snippet loops through the dictionary and calculates the winner candidate count and %
+    winner_name=max(candidate_dict, key=candidate_dict.get)
+    # Below snippet loops through the dictionary and calculates the  candidate count and %
     for i in range (0,len(candidate_dict)):
-        if (list(candidate_dict.values())[i]>winner_count):
-            winner_count=list(candidate_dict.values())[i]
-            winner_name=list(candidate_dict.keys())[i]
         vote_percent=(list(candidate_dict.values())[i]/total_votes)*100
         print(list(candidate_dict.keys())[i]+": "+"%.3f%% " % vote_percent+"("+str(list(candidate_dict.values())[i])+")")
     print("------------------------------------------------------")
